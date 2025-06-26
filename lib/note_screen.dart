@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'dart:io';
 import 'models/note.dart';
 import 'viewmodels/note_viewmodel.dart';
+import 'viewmodels/auth_viewmodel.dart';
 import 'viewmodels/home_viewmodel.dart';
 import 'services/image_service.dart';
 
@@ -27,9 +28,10 @@ class _NoteScreenState extends State<NoteScreen> {
     super.initState();
     // Initialize the NoteViewModel with the note data
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final homeViewModel = context.read<HomeViewModel>();
+      final authViewModel = context.read<AuthViewModel>();
       final noteViewModel = context.read<NoteViewModel>();
-      noteViewModel.initialize(widget.note, homeViewModel.userName);
+      final currentUserId = authViewModel.currentUser?.uid ?? '';
+      noteViewModel.initialize(widget.note, currentUserId);
 
       // Pre-fill the form if editing an existing note
       if (widget.note != null) {

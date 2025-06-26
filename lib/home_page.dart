@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'viewmodels/home_viewmodel.dart';
+import 'viewmodels/auth_viewmodel.dart';
 import 'widgets/note_list_view.dart';
 import 'widgets/note_map_view.dart';
 import 'note_screen.dart';
@@ -24,7 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             actions: [
               IconButton(
-                onPressed: () => _showLogoutDialog(context, viewModel),
+                onPressed: () => _showLogoutDialog(context),
                 icon: const Icon(Icons.logout),
                 tooltip: 'Logout',
               ),
@@ -81,34 +82,50 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Column(
       children: [
-        _buildWelcomeSection(viewModel),
+        _buildWelcomeSection(),
         Expanded(child: _buildNotesView(viewModel)),
       ],
     );
   }
 
-  Widget _buildWelcomeSection(HomeViewModel viewModel) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant,
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(16),
-          bottomRight: Radius.circular(16),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Hello, ${viewModel.userName}!',
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+  Widget _buildWelcomeSection() {
+    return Consumer<AuthViewModel>(
+      builder: (context, authViewModel, child) {
+        final user = authViewModel.currentUser;
+        final userName = user?.displayName ?? '';
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceVariant,
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(16),
+              bottomRight: Radius.circular(16),
+            ),
           ),
-        ],
-      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Hello $userName 👋',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              if (user?.email != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  user!.email!,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -147,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _showLogoutDialog(BuildContext context, HomeViewModel viewModel) {
+  void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -162,8 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                viewModel.logout();
-                // TODO: Navigate to login screen
+                context.read<AuthViewModel>().signOut();
               },
               child: const Text('Logout'),
             ),

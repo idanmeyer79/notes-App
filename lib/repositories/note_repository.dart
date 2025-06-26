@@ -4,8 +4,8 @@ import '../services/note_service.dart';
 class NoteRepository {
   final NoteService _noteService = NoteService();
 
-  Future<List<Note>> getAllNotes() async {
-    return await _noteService.getNotes();
+  Future<List<Note>> getAllNotes(String userId) async {
+    return await _noteService.getNotes(userId);
   }
 
   Future<Note> createNote({
@@ -32,6 +32,7 @@ class NoteRepository {
     required String noteId,
     required String title,
     required String content,
+    required String userId,
     double? latitude,
     double? longitude,
     String? imageUrl,
@@ -40,13 +41,14 @@ class NoteRepository {
       noteId: noteId,
       title: title,
       content: content,
+      userId: userId,
       latitude: latitude,
       longitude: longitude,
       imageUrl: imageUrl,
     );
   }
 
-  Future<void> deleteNote(String noteId) async {
-    await _noteService.deleteNote(noteId);
+  Future<void> deleteNote(String noteId, String userId) async {
+    await _noteService.deleteNote(noteId, userId);
   }
 }

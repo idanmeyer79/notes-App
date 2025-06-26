@@ -10,12 +10,11 @@ class HomeViewModel extends BaseViewModel {
 
   List<Note> _notes = [];
   ViewMode _currentViewMode = ViewMode.list;
-  String _userName = 'User';
+  String? _currentUserId;
 
   // Getters
   List<Note> get notes => _notes;
   ViewMode get currentViewMode => _currentViewMode;
-  String get userName => _userName;
   bool get hasNotes => _notes.isNotEmpty;
 
   // Notes with location data for map view
@@ -24,13 +23,16 @@ class HomeViewModel extends BaseViewModel {
           .where((note) => note.latitude != null && note.longitude != null)
           .toList();
 
-  HomeViewModel() {
+  void setCurrentUserId(String userId) {
+    _currentUserId = userId;
     _loadNotes();
   }
 
   Future<void> _loadNotes() async {
+    if (_currentUserId == null) return;
+
     await executeAsync(() async {
-      _notes = await _noteRepository.getAllNotes();
+      _notes = await _noteRepository.getAllNotes(_currentUserId!);
     });
   }
 
@@ -45,13 +47,9 @@ class HomeViewModel extends BaseViewModel {
     await _loadNotes();
   }
 
-  Future<void> logout() async {
+  void clearNotes() {
     _notes = [];
-    notifyListeners();
-  }
-
-  void setUserName(String name) {
-    _userName = name;
+    _currentUserId = null;
     notifyListeners();
   }
 }

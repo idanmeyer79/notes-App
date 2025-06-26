@@ -114,6 +114,7 @@ class NoteViewModel extends BaseViewModel {
       noteId: _note!.id,
       title: _title.trim(),
       content: _content.trim(),
+      userId: _userId,
       latitude: _latitude ?? _note!.latitude,
       longitude: _longitude ?? _note!.longitude,
       imageUrl: _note!.imageUrl,
@@ -134,7 +135,7 @@ class NoteViewModel extends BaseViewModel {
     if (_note == null) return false;
 
     return await executeAsync(() async {
-      await _noteRepository.deleteNote(_note!.id);
+      await _noteRepository.deleteNote(_note!.id, _userId);
       return true;
     });
   }

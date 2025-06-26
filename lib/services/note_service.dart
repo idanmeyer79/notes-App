@@ -4,14 +4,27 @@ import '../models/note.dart';
 class NoteService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<List<Note>> getNotes() async {
-    final QuerySnapshot snapshot =
-        await _firestore
-            .collection('notes')
-            .orderBy('createdAt', descending: true)
-            .get();
+  Future<List<Note>> getNotes(String userId) async {
+    try {
+      final QuerySnapshot snapshot =
+          await _firestore
+              .collection('notes')
+              .where('userId', isEqualTo: userId)
+              .orderBy('createdAt', descending: true)
+              .get();
 
-    return snapshot.docs.map((doc) => Note.fromFirestore(doc)).toList();
+      return snapshot.docs.map((doc) => Note.fromFirestore(doc)).toList();
+    } on FirebaseException catch (e) {
+      if (e.code == 'failed-precondition') {
+        throw Exception(
+          'Database index required. Please create a composite index for "notes" collection with fields: userId (Ascending) and createdAt (Descending). '
+          'Click the link in the error message to create it automatically.',
+        );
+      }
+      throw Exception('Failed to load notes: ${e.message}');
+    } catch (e) {
+      throw Exception('Failed to load notes: $e');
+    }
   }
 
   Future<Note> createNote({
@@ -54,6 +67,7 @@ class NoteService {
     required String noteId,
     required String title,
     required String content,
+    required String userId,
     double? latitude,
     double? longitude,
     String? imageUrl,
@@ -68,10 +82,18 @@ class NoteService {
       'imageUrl': imageUrl,
     };
 
-    await _firestore.collection('notes').doc(noteId).update(noteData);
+    // Ensure the note belongs to the current user before updating
+    final doc = await _firestore.collection('notes').doc(noteId).get();
+    if (doc.exists && doc.data()?['userId'] == userId) {
+      await _firestore.collection('notes').doc(noteId).update(noteData);
+    }
   }
 
-  Future<void> deleteNote(String noteId) async {
-    await _firestore.collection('notes').doc(noteId).delete();
+  Future<void> deleteNote(String noteId, String userId) async {
+    // Ensure the note belongs to the current user before deleting
+    final doc = await _firestore.collection('notes').doc(noteId).get();
+    if (doc.exists && doc.data()?['userId'] == userId) {
+      await _firestore.collection('notes').doc(noteId).delete();
+    }
   }
 }
