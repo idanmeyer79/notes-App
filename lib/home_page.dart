@@ -102,19 +102,10 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Welcome back, ${viewModel.userName}!',
+            'Hello, ${viewModel.userName}!',
             style: Theme.of(
               context,
             ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            viewModel.hasNotes
-                ? 'You have ${viewModel.notes.length} note${viewModel.notes.length == 1 ? '' : 's'}'
-                : 'Start creating your first note',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
           ),
         ],
       ),

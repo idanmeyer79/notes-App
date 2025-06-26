@@ -102,6 +102,30 @@ class _NoteScreenState extends State<NoteScreen> {
               onChanged: noteViewModel.updateTitle,
             ),
 
+            // Content field with fixed height
+            SizedBox(
+              height: 200,
+              child: TextFormField(
+                controller: _contentController,
+                decoration: const InputDecoration(
+                  labelText: 'Content',
+                  hintText: 'Enter note content',
+                  border: OutlineInputBorder(),
+                  alignLabelWithHint: true,
+                ),
+                maxLines: null,
+                expands: true,
+                textAlignVertical: TextAlignVertical.top,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter some content';
+                  }
+                  return null;
+                },
+                onChanged: noteViewModel.updateContent,
+              ),
+            ),
+
             // Date picker
             InkWell(
               onTap: () => _selectDate(context, noteViewModel),
@@ -113,9 +137,9 @@ class _NoteScreenState extends State<NoteScreen> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Row(
+                  spacing: 12,
                   children: [
                     Icon(Icons.calendar_today, color: Colors.grey[600]),
-                    const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,7 +191,6 @@ class _NoteScreenState extends State<NoteScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
                   if (noteViewModel.selectedImage != null) ...[
                     Container(
                       width: double.infinity,
@@ -184,9 +207,9 @@ class _NoteScreenState extends State<NoteScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
                   ],
                   Row(
+                    spacing: 8,
                     children: [
                       Expanded(
                         child: OutlinedButton.icon(
@@ -198,7 +221,6 @@ class _NoteScreenState extends State<NoteScreen> {
                           label: const Text('Gallery'),
                         ),
                       ),
-                      const SizedBox(width: 8),
                       Expanded(
                         child: OutlinedButton.icon(
                           onPressed:
@@ -212,7 +234,6 @@ class _NoteScreenState extends State<NoteScreen> {
                     ],
                   ),
                   if (noteViewModel.selectedImage != null) ...[
-                    const SizedBox(height: 8),
                     SizedBox(
                       width: double.infinity,
                       child: TextButton.icon(
@@ -233,34 +254,8 @@ class _NoteScreenState extends State<NoteScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
-
-            // Content field with fixed height
-            Container(
-              height: 200,
-              child: TextFormField(
-                controller: _contentController,
-                decoration: const InputDecoration(
-                  labelText: 'Content',
-                  hintText: 'Enter note content',
-                  border: OutlineInputBorder(),
-                  alignLabelWithHint: true,
-                ),
-                maxLines: null,
-                expands: true,
-                textAlignVertical: TextAlignVertical.top,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Please enter some content';
-                  }
-                  return null;
-                },
-                onChanged: noteViewModel.updateContent,
-              ),
-            ),
 
             if (noteViewModel.hasError) ...[
-              const SizedBox(height: 16),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
@@ -275,7 +270,6 @@ class _NoteScreenState extends State<NoteScreen> {
                 ),
               ),
             ],
-            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -289,6 +283,7 @@ class _NoteScreenState extends State<NoteScreen> {
                 child:
                     noteViewModel.isLoading
                         ? const Row(
+                          spacing: 8,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(
@@ -296,7 +291,6 @@ class _NoteScreenState extends State<NoteScreen> {
                               height: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             ),
-                            SizedBox(width: 8),
                             Text('Saving...'),
                           ],
                         )
@@ -307,9 +301,6 @@ class _NoteScreenState extends State<NoteScreen> {
                         ),
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ), // Extra padding at bottom for better scrolling
           ],
         ),
       ),
