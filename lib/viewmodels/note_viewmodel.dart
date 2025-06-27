@@ -18,6 +18,7 @@ class NoteViewModel extends BaseViewModel {
   double? _longitude;
   DateTime _selectedDate = DateTime.now();
   File? _selectedImage;
+  String? _uploadedImageUrl;
 
   Note? get note => _note;
   String get title => _title;
@@ -28,6 +29,7 @@ class NoteViewModel extends BaseViewModel {
   double? get longitude => _longitude;
   DateTime get selectedDate => _selectedDate;
   File? get selectedImage => _selectedImage;
+  String? get uploadedImageUrl => _uploadedImageUrl;
 
   void initialize(Note? note, String userId) {
     _note = note;
@@ -39,6 +41,17 @@ class NoteViewModel extends BaseViewModel {
       _latitude = note.latitude;
       _longitude = note.longitude;
       _selectedDate = note.createdAt;
+      _uploadedImageUrl = note.imageUrl;
+      _selectedImage = null; // Clear any previously selected image
+    } else {
+      // For new notes, clear everything
+      _title = '';
+      _content = '';
+      _latitude = null;
+      _longitude = null;
+      _selectedDate = DateTime.now();
+      _uploadedImageUrl = null;
+      _selectedImage = null;
     }
 
     notifyListeners();
@@ -61,7 +74,48 @@ class NoteViewModel extends BaseViewModel {
 
   void setSelectedImage(File? image) {
     _selectedImage = image;
+    if (image == null) {
+      // If clearing selected image, also clear uploaded URL for new notes
+      if (!isEditing) {
+        _uploadedImageUrl = null;
+      }
+    } else {
+      // Reset uploaded URL when new image is selected
+      _uploadedImageUrl = null;
+    }
     notifyListeners();
+  }
+
+  /// Clear both selected image and uploaded image URL
+  void clearImage() {
+    _selectedImage = null;
+    _uploadedImageUrl =
+        null; // This will be saved as null when updating existing notes
+    notifyListeners();
+  }
+
+  /// Upload the selected image to Supabase storage
+  Future<bool> uploadSelectedImage() async {
+    if (_selectedImage == null) return true;
+
+    return await executeAsync(() async {
+      try {
+        final String? imageUrl = await _imageService.uploadImageToSupabase(
+          _selectedImage!,
+        );
+        if (imageUrl != null) {
+          _uploadedImageUrl = imageUrl;
+          notifyListeners();
+          return true;
+        } else {
+          setError('Failed to upload image');
+          return false;
+        }
+      } catch (e) {
+        setError('Error uploading image: $e');
+        return false;
+      }
+    });
   }
 
   Future<void> captureLocation() async {
@@ -85,6 +139,14 @@ class NoteViewModel extends BaseViewModel {
     }
 
     return await executeAsync(() async {
+      // Upload image first if there's a selected image
+      if (_selectedImage != null) {
+        final uploadSuccess = await uploadSelectedImage();
+        if (!uploadSuccess) {
+          return false;
+        }
+      }
+
       if (isEditing) {
         return await _updateNote();
       } else {
@@ -103,12 +165,39 @@ class NoteViewModel extends BaseViewModel {
       latitude: _latitude,
       longitude: _longitude,
       createdAt: _selectedDate,
+      imageUrl: _uploadedImageUrl,
     );
+
+    // Clear the selected image after successful creation
+    _selectedImage = null;
+    notifyListeners();
+
     return true;
   }
 
   Future<bool> _updateNote() async {
     if (_note == null) return false;
+
+    // If we had an image before but now we don't, delete it from Supabase
+    if (_note!.imageUrl != null &&
+        _note!.imageUrl!.isNotEmpty &&
+        _uploadedImageUrl == null) {
+      print('Deleting old image from Supabase: ${_note!.imageUrl}');
+      await _imageService.deleteImageFromSupabase(_note!.imageUrl!);
+    }
+
+    // Determine the final imageUrl value
+    // At this point, if there was a selected image, it has been uploaded and _uploadedImageUrl is set
+    String? finalImageUrl =
+        _uploadedImageUrl; // This will be null if no image or image was removed
+    print('Final imageUrl: $finalImageUrl');
+
+    // Check if the date has changed
+    DateTime? updatedCreatedAt;
+    if (_selectedDate != _note!.createdAt) {
+      updatedCreatedAt = _selectedDate;
+      print('Date changed from ${_note!.createdAt} to $updatedCreatedAt');
+    }
 
     await _noteRepository.updateNote(
       noteId: _note!.id,
@@ -117,7 +206,8 @@ class NoteViewModel extends BaseViewModel {
       userId: _userId,
       latitude: _latitude ?? _note!.latitude,
       longitude: _longitude ?? _note!.longitude,
-      imageUrl: _note!.imageUrl,
+      imageUrl: finalImageUrl,
+      createdAt: updatedCreatedAt,
     );
 
     _note = _note!.copyWith(
@@ -126,7 +216,13 @@ class NoteViewModel extends BaseViewModel {
       updatedAt: DateTime.now(),
       latitude: _latitude ?? _note!.latitude,
       longitude: _longitude ?? _note!.longitude,
+      imageUrl: finalImageUrl,
+      createdAt: updatedCreatedAt ?? _note!.createdAt,
     );
+
+    // Clear the selected image after successful update
+    _selectedImage = null;
+    notifyListeners();
 
     return true;
   }
@@ -135,6 +231,11 @@ class NoteViewModel extends BaseViewModel {
     if (_note == null) return false;
 
     return await executeAsync(() async {
+      // Delete the image from Supabase if it exists
+      if (_note!.imageUrl != null && _note!.imageUrl!.isNotEmpty) {
+        await _imageService.deleteImageFromSupabase(_note!.imageUrl!);
+      }
+
       await _noteRepository.deleteNote(_note!.id, _userId);
       return true;
     });
@@ -148,6 +249,7 @@ class NoteViewModel extends BaseViewModel {
     _longitude = null;
     _selectedDate = DateTime.now();
     _selectedImage = null;
+    _uploadedImageUrl = null;
     clearError();
     setState(ViewState.idle);
   }

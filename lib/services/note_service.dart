@@ -71,16 +71,28 @@ class NoteService {
     double? latitude,
     double? longitude,
     String? imageUrl,
+    DateTime? createdAt,
   }) async {
     final now = DateTime.now();
-    final noteData = {
+    final noteData = <String, dynamic>{
       'title': title,
       'content': content,
       'updatedAt': Timestamp.fromDate(now),
       'latitude': latitude,
       'longitude': longitude,
-      'imageUrl': imageUrl,
     };
+
+    // Handle imageUrl - explicitly set to null if provided as null
+    if (imageUrl != null) {
+      noteData['imageUrl'] = imageUrl;
+    } else {
+      noteData['imageUrl'] = null; // Explicitly set to null to remove image
+    }
+
+    // Handle createdAt - update if provided
+    if (createdAt != null) {
+      noteData['createdAt'] = Timestamp.fromDate(createdAt);
+    }
 
     final doc = await _firestore.collection('notes').doc(noteId).get();
     if (doc.exists && doc.data()?['userId'] == userId) {

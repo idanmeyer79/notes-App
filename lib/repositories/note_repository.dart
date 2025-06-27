@@ -36,6 +36,7 @@ class NoteRepository {
     double? latitude,
     double? longitude,
     String? imageUrl,
+    DateTime? createdAt,
   }) async {
     await _noteService.updateNote(
       noteId: noteId,
@@ -45,6 +46,7 @@ class NoteRepository {
       latitude: latitude,
       longitude: longitude,
       imageUrl: imageUrl,
+      createdAt: createdAt,
     );
   }
 

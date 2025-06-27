@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'models/note.dart';
 import 'viewmodels/note_viewmodel.dart';
 import 'viewmodels/auth_viewmodel.dart';
@@ -189,7 +190,8 @@ class _NoteScreenState extends State<NoteScreen> {
                       ),
                     ],
                   ),
-                  if (noteViewModel.selectedImage != null) ...[
+                  if (noteViewModel.selectedImage != null ||
+                      noteViewModel.uploadedImageUrl != null) ...[
                     Container(
                       width: double.infinity,
                       height: 200,
@@ -199,10 +201,30 @@ class _NoteScreenState extends State<NoteScreen> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.file(
-                          noteViewModel.selectedImage!,
-                          fit: BoxFit.cover,
-                        ),
+                        child:
+                            noteViewModel.selectedImage != null
+                                ? Image.file(
+                                  noteViewModel.selectedImage!,
+                                  fit: BoxFit.cover,
+                                )
+                                : noteViewModel.uploadedImageUrl != null
+                                ? CachedNetworkImage(
+                                  imageUrl: noteViewModel.uploadedImageUrl!,
+                                  fit: BoxFit.cover,
+                                  placeholder:
+                                      (context, url) => const Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                  errorWidget:
+                                      (context, url, error) => const Center(
+                                        child: Icon(
+                                          Icons.error,
+                                          color: Colors.red,
+                                          size: 50,
+                                        ),
+                                      ),
+                                )
+                                : const SizedBox.shrink(),
                       ),
                     ),
                   ],
@@ -231,7 +253,8 @@ class _NoteScreenState extends State<NoteScreen> {
                       ),
                     ],
                   ),
-                  if (noteViewModel.selectedImage != null) ...[
+                  if (noteViewModel.selectedImage != null ||
+                      noteViewModel.uploadedImageUrl != null) ...[
                     SizedBox(
                       width: double.infinity,
                       child: TextButton.icon(
@@ -239,7 +262,8 @@ class _NoteScreenState extends State<NoteScreen> {
                             noteViewModel.isLoading
                                 ? null
                                 : () {
-                                  noteViewModel.setSelectedImage(null);
+                                  // Clear both selected image and uploaded URL
+                                  noteViewModel.clearImage();
                                 },
                         icon: const Icon(Icons.delete, size: 16),
                         label: const Text('Remove Image'),
