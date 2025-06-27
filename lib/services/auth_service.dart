@@ -41,7 +41,6 @@ class AuthService {
     }
   }
 
-  // Sign in with Google
   Future<UserCredential?> signInWithGoogle() async {
     try {
       // Trigger the authentication flow

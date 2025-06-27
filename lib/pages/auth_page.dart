@@ -344,7 +344,6 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Google Sign In/Up Button
                   Consumer<AuthViewModel>(
                     builder: (context, authViewModel, child) {
                       return OutlinedButton.icon(
@@ -366,14 +365,11 @@ class _AuthPageState extends State<AuthPage> {
                                         backgroundColor: Colors.green,
                                       ),
                                     );
-                                    // Navigation will be handled by auth state listener
                                   }
                                 },
                         icon: const Icon(Icons.g_mobiledata),
                         label: Text(
-                          _isSignUp
-                              ? 'Sign up with Google'
-                              : 'Sign in with Google',
+                          'Continue with Google',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
