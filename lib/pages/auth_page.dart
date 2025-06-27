@@ -1,27 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/auth_viewmodel.dart';
-import 'signup_page.dart';
 import 'forgot_password_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class AuthPage extends StatefulWidget {
+  const AuthPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<AuthPage> createState() => _AuthPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _AuthPageState extends State<AuthPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+  bool _isSignUp = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  void _toggleMode() {
+    setState(() {
+      _isSignUp = !_isSignUp;
+      // Clear form when switching modes
+      _formKey.currentState?.reset();
+      _emailController.clear();
+      _passwordController.clear();
+      _confirmPasswordController.clear();
+    });
   }
 
   @override
@@ -44,9 +58,9 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.deepPurple,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Welcome Back',
-                    style: TextStyle(
+                  Text(
+                    _isSignUp ? 'Create Account' : 'Welcome Back',
+                    style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: Colors.deepPurple,
@@ -54,9 +68,11 @@ class _LoginPageState extends State<LoginPage> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Sign in to continue to your notes',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  Text(
+                    _isSignUp
+                        ? 'Sign up to start creating your notes'
+                        : 'Sign in to continue to your notes',
+                    style: const TextStyle(fontSize: 16, color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 48),
@@ -143,26 +159,80 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 16),
 
-                  // Forgot Password Link
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ForgotPasswordPage(),
+                  // Confirm Password Field (only for sign up)
+                  if (_isSignUp) ...[
+                    TextFormField(
+                      controller: _confirmPasswordController,
+                      obscureText: _obscureConfirmPassword,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm Password',
+                        hintText: 'Confirm your password',
+                        prefixIcon: const Icon(Icons.lock_outlined),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureConfirmPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                           ),
-                        );
+                          onPressed: () {
+                            setState(() {
+                              _obscureConfirmPassword =
+                                  !_obscureConfirmPassword;
+                            });
+                          },
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.deepPurple,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your password';
+                        }
+                        if (value != _passwordController.text) {
+                          return 'Passwords do not match';
+                        }
+                        return null;
                       },
-                      child: const Text(
-                        'Forgot Password?',
-                        style: TextStyle(color: Colors.deepPurple),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  // Forgot Password Link (only for sign in)
+                  if (!_isSignUp) ...[
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ForgotPasswordPage(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Forgot Password?',
+                          style: TextStyle(color: Colors.deepPurple),
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 8),
+                  ],
+
                   const SizedBox(height: 24),
 
                   // Error Message
@@ -188,7 +258,7 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
 
-                  // Sign In Button
+                  // Sign In/Up Button
                   Consumer<AuthViewModel>(
                     builder: (context, authViewModel, child) {
                       return ElevatedButton(
@@ -197,19 +267,30 @@ class _LoginPageState extends State<LoginPage> {
                                 ? null
                                 : () async {
                                   if (_formKey.currentState!.validate()) {
-                                    final success = await authViewModel
-                                        .signInWithEmailAndPassword(
-                                          _emailController.text.trim(),
-                                          _passwordController.text,
-                                        );
+                                    bool success;
+                                    if (_isSignUp) {
+                                      success = await authViewModel
+                                          .signUpWithEmailAndPassword(
+                                            _emailController.text.trim(),
+                                            _passwordController.text,
+                                          );
+                                    } else {
+                                      success = await authViewModel
+                                          .signInWithEmailAndPassword(
+                                            _emailController.text.trim(),
+                                            _passwordController.text,
+                                          );
+                                    }
                                     if (success && mounted) {
                                       // Show success message
                                       ScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
-                                        const SnackBar(
+                                        SnackBar(
                                           content: Text(
-                                            'Successfully signed in!',
+                                            _isSignUp
+                                                ? 'Account created successfully!'
+                                                : 'Successfully signed in!',
                                           ),
                                           backgroundColor: Colors.green,
                                         ),
@@ -238,9 +319,9 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   ),
                                 )
-                                : const Text(
-                                  'Sign In',
-                                  style: TextStyle(
+                                : Text(
+                                  _isSignUp ? 'Sign Up' : 'Sign In',
+                                  style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -263,7 +344,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Google Sign In Button
+                  // Google Sign In/Up Button
                   Consumer<AuthViewModel>(
                     builder: (context, authViewModel, child) {
                       return OutlinedButton.icon(
@@ -276,9 +357,11 @@ class _LoginPageState extends State<LoginPage> {
                                   if (success && mounted) {
                                     // Show success message
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
+                                      SnackBar(
                                         content: Text(
-                                          'Successfully signed in with Google!',
+                                          _isSignUp
+                                              ? 'Account created successfully with Google!'
+                                              : 'Successfully signed in with Google!',
                                         ),
                                         backgroundColor: Colors.green,
                                       ),
@@ -286,10 +369,12 @@ class _LoginPageState extends State<LoginPage> {
                                     // Navigation will be handled by auth state listener
                                   }
                                 },
-                        icon: Icon(Icons.g_mobiledata),
-                        label: const Text(
-                          'Sign in with Google',
-                          style: TextStyle(
+                        icon: const Icon(Icons.g_mobiledata),
+                        label: Text(
+                          _isSignUp
+                              ? 'Sign up with Google'
+                              : 'Sign in with Google',
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
@@ -306,26 +391,21 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 32),
 
-                  // Sign Up Link
+                  // Toggle Mode Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        "Don't have an account? ",
-                        style: TextStyle(color: Colors.grey),
+                      Text(
+                        _isSignUp
+                            ? 'Already have an account? '
+                            : "Don't have an account? ",
+                        style: const TextStyle(color: Colors.grey),
                       ),
                       TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SignupPage(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          'Sign Up',
-                          style: TextStyle(
+                        onPressed: _toggleMode,
+                        child: Text(
+                          _isSignUp ? 'Sign In' : 'Sign Up',
+                          style: const TextStyle(
                             color: Colors.deepPurple,
                             fontWeight: FontWeight.bold,
                           ),

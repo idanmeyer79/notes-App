@@ -100,7 +100,6 @@ class _NoteMapViewState extends State<NoteMapView> {
             setState(() {
               _isMapReady = true;
             });
-            // Delay the fit bounds to ensure map is fully loaded
             Future.delayed(const Duration(milliseconds: 500), () {
               if (mounted) {
                 _fitBounds();
@@ -157,17 +156,6 @@ class _NoteMapViewState extends State<NoteMapView> {
             style: TextStyle(fontSize: 16, color: Colors.grey[500]),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const NoteScreen()),
-              );
-            },
-            icon: const Icon(Icons.add),
-            label: const Text('Create Note'),
-          ),
         ],
       ),
     );
@@ -219,7 +207,6 @@ class _NoteMapViewState extends State<NoteMapView> {
         _mapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
       }
     } catch (e) {
-      // Handle any errors during camera movement
       debugPrint('Error fitting bounds: $e');
     }
   }
