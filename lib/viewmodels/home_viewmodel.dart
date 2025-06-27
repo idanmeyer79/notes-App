@@ -12,12 +12,10 @@ class HomeViewModel extends BaseViewModel {
   ViewMode _currentViewMode = ViewMode.list;
   String? _currentUserId;
 
-  // Getters
   List<Note> get notes => _notes;
   ViewMode get currentViewMode => _currentViewMode;
   bool get hasNotes => _notes.isNotEmpty;
 
-  // Notes with location data for map view
   List<Note> get notesWithLocation =>
       _notes
           .where((note) => note.latitude != null && note.longitude != null)

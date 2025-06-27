@@ -15,6 +15,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _showWelcomeSection = true;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<HomeViewModel>(
@@ -82,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Column(
       children: [
-        _buildWelcomeSection(),
+        if (_showWelcomeSection) _buildWelcomeSection(),
         Expanded(child: _buildNotesView(viewModel)),
       ],
     );
@@ -94,36 +96,49 @@ class _MyHomePageState extends State<MyHomePage> {
         final user = authViewModel.currentUser;
         final userName = user?.displayName ?? '';
 
-        return Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceVariant,
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(16),
-              bottomRight: Radius.circular(16),
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Hello $userName 👋',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+        return Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
-              if (user?.email != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  user!.email!,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
-                ),
-              ],
-            ],
-          ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hello $userName 👋',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (user?.email != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      user!.email!,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Positioned(
+              top: 2,
+              right: 2,
+              child: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _showWelcomeSection = false;
+                  });
+                },
+                icon: const Icon(Icons.close, size: 20),
+                style: IconButton.styleFrom(minimumSize: const Size(16, 16)),
+              ),
+            ),
+          ],
         );
       },
     );

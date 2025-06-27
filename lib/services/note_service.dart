@@ -82,7 +82,6 @@ class NoteService {
       'imageUrl': imageUrl,
     };
 
-    // Ensure the note belongs to the current user before updating
     final doc = await _firestore.collection('notes').doc(noteId).get();
     if (doc.exists && doc.data()?['userId'] == userId) {
       await _firestore.collection('notes').doc(noteId).update(noteData);
@@ -90,7 +89,6 @@ class NoteService {
   }
 
   Future<void> deleteNote(String noteId, String userId) async {
-    // Ensure the note belongs to the current user before deleting
     final doc = await _firestore.collection('notes').doc(noteId).get();
     if (doc.exists && doc.data()?['userId'] == userId) {
       await _firestore.collection('notes').doc(noteId).delete();

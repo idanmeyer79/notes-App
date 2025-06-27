@@ -72,7 +72,7 @@ class _NoteMapViewState extends State<NoteMapView> {
                 },
               ),
               icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueBlue,
+                BitmapDescriptor.hueRed,
               ),
             ),
           );
@@ -109,16 +109,10 @@ class _NoteMapViewState extends State<NoteMapView> {
           initialCameraPosition: _getInitialCameraPosition(),
           markers: _markers,
           myLocationEnabled: true,
-          myLocationButtonEnabled: true,
+          myLocationButtonEnabled: false,
           zoomControlsEnabled: false,
           mapToolbarEnabled: false,
           compassEnabled: true,
-          onCameraMove: (_) {
-            // Prevent excessive updates
-          },
-          onCameraIdle: () {
-            // Map has finished moving
-          },
         ),
         if (_isMapReady)
           Positioned(
@@ -175,7 +169,6 @@ class _NoteMapViewState extends State<NoteMapView> {
       return const CameraPosition(target: LatLng(0, 0), zoom: 2);
     }
 
-    // Use the first note with location as initial position
     final firstNote = notesWithLocation.first;
     return CameraPosition(
       target: LatLng(firstNote.latitude!, firstNote.longitude!),

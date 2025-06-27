@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 class ImageService {
   final ImagePicker _picker = ImagePicker();
 
-  /// Pick an image from the gallery
   Future<File?> pickImageFromGallery() async {
     try {
       final XFile? image = await _picker.pickImage(
@@ -25,7 +24,6 @@ class ImageService {
     }
   }
 
-  /// Take a photo with the camera
   Future<File?> takePhotoWithCamera() async {
     try {
       final XFile? photo = await _picker.pickImage(
@@ -45,7 +43,6 @@ class ImageService {
     }
   }
 
-  /// Show image source selection dialog
   Future<File?> showImageSourceDialog(BuildContext context) async {
     return showDialog<File?>(
       context: context,
@@ -61,7 +58,9 @@ class ImageService {
                 onTap: () async {
                   Navigator.of(context).pop();
                   final file = await pickImageFromGallery();
-                  Navigator.of(context).pop(file);
+                  if (context.mounted) {
+                    Navigator.of(context).pop(file);
+                  }
                 },
               ),
               ListTile(
@@ -70,7 +69,9 @@ class ImageService {
                 onTap: () async {
                   Navigator.of(context).pop();
                   final file = await takePhotoWithCamera();
-                  Navigator.of(context).pop(file);
+                  if (context.mounted) {
+                    Navigator.of(context).pop(file);
+                  }
                 },
               ),
             ],

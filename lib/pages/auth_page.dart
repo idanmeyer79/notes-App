@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/auth_viewmodel.dart';
-import 'forgot_password_page.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -30,12 +30,14 @@ class _AuthPageState extends State<AuthPage> {
   void _toggleMode() {
     setState(() {
       _isSignUp = !_isSignUp;
-      // Clear form when switching modes
+
       _formKey.currentState?.reset();
       _emailController.clear();
       _passwordController.clear();
       _confirmPasswordController.clear();
     });
+
+    context.read<AuthViewModel>().clearError();
   }
 
   @override
@@ -51,7 +53,6 @@ class _AuthPageState extends State<AuthPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // App Logo/Title
                   const Icon(
                     Icons.note_alt_outlined,
                     size: 80,
@@ -77,7 +78,6 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                   const SizedBox(height: 48),
 
-                  // Email Field
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -105,7 +105,7 @@ class _AuthPageState extends State<AuthPage> {
                         return 'Please enter your email';
                       }
                       if (!RegExp(
-                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                        r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$',
                       ).hasMatch(value)) {
                         return 'Please enter a valid email';
                       }
@@ -114,7 +114,6 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Password Field
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
@@ -161,7 +160,6 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Confirm Password Field (only for sign up)
                   if (_isSignUp) ...[
                     TextFormField(
                       controller: _confirmPasswordController,
@@ -211,31 +209,6 @@ class _AuthPageState extends State<AuthPage> {
                     const SizedBox(height: 16),
                   ],
 
-                  // Forgot Password Link (only for sign in)
-                  if (!_isSignUp) ...[
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ForgotPasswordPage(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          'Forgot Password?',
-                          style: TextStyle(color: Colors.deepPurple),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-
-                  const SizedBox(height: 24),
-
-                  // Error Message
                   Consumer<AuthViewModel>(
                     builder: (context, authViewModel, child) {
                       if (authViewModel.errorMessage != null) {
@@ -258,7 +231,6 @@ class _AuthPageState extends State<AuthPage> {
                     },
                   ),
 
-                  // Sign In/Up Button
                   Consumer<AuthViewModel>(
                     builder: (context, authViewModel, child) {
                       return ElevatedButton(
@@ -282,7 +254,6 @@ class _AuthPageState extends State<AuthPage> {
                                           );
                                     }
                                     if (success && mounted) {
-                                      // Show success message
                                       ScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
@@ -295,7 +266,6 @@ class _AuthPageState extends State<AuthPage> {
                                           backgroundColor: Colors.green,
                                         ),
                                       );
-                                      // Navigation will be handled by auth state listener
                                     }
                                   }
                                 },
@@ -331,7 +301,6 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Divider
                   const Row(
                     children: [
                       Expanded(child: Divider()),
@@ -346,48 +315,17 @@ class _AuthPageState extends State<AuthPage> {
 
                   Consumer<AuthViewModel>(
                     builder: (context, authViewModel, child) {
-                      return OutlinedButton.icon(
-                        onPressed:
-                            authViewModel.isLoading
-                                ? null
-                                : () async {
-                                  final success =
-                                      await authViewModel.signInWithGoogle();
-                                  if (success && mounted) {
-                                    // Show success message
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          _isSignUp
-                                              ? 'Account created successfully with Google!'
-                                              : 'Successfully signed in with Google!',
-                                        ),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
-                                  }
-                                },
-                        icon: const Icon(Icons.g_mobiledata),
-                        label: Text(
-                          'Continue with Google',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          side: const BorderSide(color: Colors.grey),
-                        ),
+                      return SignInButton(
+                        Buttons.google,
+                        text: "Continue with Google",
+                        onPressed: () {
+                          authViewModel.signInWithGoogle();
+                        },
                       );
                     },
                   ),
                   const SizedBox(height: 32),
 
-                  // Toggle Mode Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

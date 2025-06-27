@@ -26,14 +26,13 @@ class _NoteScreenState extends State<NoteScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize the NoteViewModel with the note data
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authViewModel = context.read<AuthViewModel>();
       final noteViewModel = context.read<NoteViewModel>();
       final currentUserId = authViewModel.currentUser?.uid ?? '';
       noteViewModel.initialize(widget.note, currentUserId);
 
-      // Pre-fill the form if editing an existing note
       if (widget.note != null) {
         _titleController.text = widget.note!.title;
         _contentController.text = widget.note!.content;
@@ -104,7 +103,6 @@ class _NoteScreenState extends State<NoteScreen> {
               onChanged: noteViewModel.updateTitle,
             ),
 
-            // Content field with fixed height
             SizedBox(
               height: 200,
               child: TextFormField(
@@ -128,7 +126,6 @@ class _NoteScreenState extends State<NoteScreen> {
               ),
             ),
 
-            // Date picker
             InkWell(
               onTap: () => _selectDate(context, noteViewModel),
               child: Container(
@@ -168,7 +165,6 @@ class _NoteScreenState extends State<NoteScreen> {
               ),
             ),
 
-            // Image upload section
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
@@ -377,7 +373,6 @@ class _NoteScreenState extends State<NoteScreen> {
         ),
       );
 
-      // Refresh the home screen notes
       context.read<HomeViewModel>().refreshNotes();
       Navigator.of(context).pop();
     }
