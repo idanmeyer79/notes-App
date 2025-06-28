@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../models/note.dart';
-import '../note_screen.dart';
+import '../../models/note.dart';
+import '../../note_screen.dart';
 
 class NoteMapView extends StatefulWidget {
   final List<Note> notes;

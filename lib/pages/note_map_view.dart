@@ -18,7 +18,6 @@ class NoteMapView extends StatefulWidget {
 class _NoteMapViewState extends State<NoteMapView> {
   GoogleMapController? _mapController;
   final Set<Marker> _markers = {};
-  bool _isMapReady = false;
 
   @override
   void initState() {
@@ -99,9 +98,6 @@ class _NoteMapViewState extends State<NoteMapView> {
         GoogleMap(
           onMapCreated: (GoogleMapController controller) {
             _mapController = controller;
-            setState(() {
-              _isMapReady = true;
-            });
           },
           initialCameraPosition: _getInitialCameraPosition(),
           markers: _markers,

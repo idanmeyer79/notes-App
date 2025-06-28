@@ -1,14 +1,17 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import '../models/note.dart';
 import '../repositories/note_repository.dart';
 import '../services/location_service.dart';
 import '../services/image_service.dart';
+import '../services/date_time_service.dart';
 import 'base_viewmodel.dart';
 
 class NoteViewModel extends BaseViewModel {
   final NoteRepository _noteRepository = NoteRepository();
   final LocationService _locationService = LocationService();
   final ImageService _imageService = ImageService();
+  final DateTimeService _dateTimeService = DateTimeService();
 
   Note? _note;
   String _title = '';
@@ -237,5 +240,32 @@ class NoteViewModel extends BaseViewModel {
     _uploadedImageUrl = null;
     clearError();
     setState(ViewState.idle);
+  }
+
+  Future<void> selectDateTime(BuildContext context) async {
+    final DateTime? selectedDateTime = await _dateTimeService.selectDateTime(
+      context,
+      initialDate: _selectedDate,
+    );
+
+    if (selectedDateTime != null) {
+      updateSelectedDate(selectedDateTime);
+    }
+  }
+
+  Future<void> selectImageFromGallery(BuildContext context) async {
+    final File? image = await _imageService.selectImageFromGallery(context);
+    if (image != null) {
+      setSelectedImage(image);
+    }
+  }
+
+  Future<void> takePhotoWithCamera(BuildContext context) async {
+    final File? photo = await _imageService.takePhotoWithCameraAndHandleErrors(
+      context,
+    );
+    if (photo != null) {
+      setSelectedImage(photo);
+    }
   }
 }

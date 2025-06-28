@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/note.dart';
-import 'empty_state_widget.dart';
+import '../../models/note.dart';
+import '../empty_state_widget.dart';
 import 'note_card.dart';
 
 class NoteListView extends StatelessWidget {

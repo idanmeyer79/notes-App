@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:notes_app/pages/note_list_view.dart';
 import 'package:provider/provider.dart';
 import 'viewmodels/home_viewmodel.dart';
 import 'viewmodels/auth_viewmodel.dart';
-import 'widgets/note_list_view.dart';
 import 'pages/note_map_view.dart';
 import 'note_screen.dart';
 

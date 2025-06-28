@@ -14,9 +14,7 @@ import 'package:flutter/rendering.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  
   if (Platform.isAndroid) {
-    
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -25,7 +23,7 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Supabase.initialize(
-    url: 'https:
+    url: 'https://vexnbxzexdovldgcohaf.supabase.co',
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZleG5ieHpleGRvdmxkZ2NvaGFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEwMzEwNzcsImV4cCI6MjA2NjYwNzA3N30.ahA_VbQCTTkEf1aCfg3FrTG93aFZ_Mv5-cY_MopJU9s',
   );

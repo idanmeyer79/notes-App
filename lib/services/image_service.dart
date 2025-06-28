@@ -86,47 +86,37 @@ class ImageService {
     }
   }
 
-  Future<File?> showImageSourceDialog(BuildContext context) async {
-    return showDialog<File?>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Select Image Source'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text('Gallery'),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  final file = await pickImageFromGallery();
-                  if (context.mounted) {
-                    Navigator.of(context).pop(file);
-                  }
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.camera_alt),
-                title: const Text('Camera'),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  final file = await takePhotoWithCamera();
-                  if (context.mounted) {
-                    Navigator.of(context).pop(file);
-                  }
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
+  Future<File?> selectImageFromGallery(BuildContext context) async {
+    try {
+      final File? image = await pickImageFromGallery();
+      if (image != null) {
+        return image;
+      }
+      return null;
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to select image: $e')));
+      }
+      return null;
+    }
+  }
+
+  Future<File?> takePhotoWithCameraAndHandleErrors(BuildContext context) async {
+    try {
+      final File? photo = await takePhotoWithCamera();
+      if (photo != null) {
+        return photo;
+      }
+      return null;
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to take photo: $e')));
+      }
+      return null;
+    }
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../models/note.dart';
-import '../note_screen.dart';
+import '../../models/note.dart';
+import '../../note_screen.dart';
 
 class NoteCard extends StatelessWidget {
   final Note note;
