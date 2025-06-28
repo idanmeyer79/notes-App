@@ -37,21 +37,25 @@ A modern Flutter application for creating and managing notes with location suppo
     <tr>
       <td align="center">
         <b>Authentication Screen</b><br/>
-        <img src="screenshots/auth_screen.png" width="200" alt="Authentication Screen"/>
+        <img src="screenshots/auth_screen.PNG" width="200" alt="Authentication Screen"/>
       </td>
       <td align="center">
         <b>Home Screen - List View</b><br/>
-        <img src="screenshots/home_list_view.png" width="200" alt="Home Screen List View"/>
+        <img src="screenshots/home_list_view.PNG" width="200" alt="Home Screen List View"/>
       </td>
       <td align="center">
         <b>Home Screen - Map View</b><br/>
-        <img src="screenshots/home_map_view.png" width="200" alt="Home Screen Map View"/>
+        <img src="screenshots/home_map_view.PNG" width="200" alt="Home Screen Map View"/>
       </td>
     </tr>
     <tr>
       <td align="center">
         <b>Note Reading</b><br/>
-        <img src="screenshots/note_reading.png" width="200" alt="Note Reading Screen"/>
+        <img src="screenshots/note_reading.PNG" width="200" alt="Note Reading Screen"/>
+      </td>
+      <td align="center">
+        <b>Additional Screenshot</b><br/>
+        <img src="screenshots/IMG_7103.PNG" width="200" alt="Additional App Screenshot"/>
       </td>
     </tr>
   </table>
