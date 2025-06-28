@@ -36,11 +36,11 @@ A modern Flutter application for creating and managing notes with location suppo
   <table>
     <tr>
       <td align="center">
-        <b>Authentication Screen</b><br/>
+        <b>Signin Screen</b><br/>
         <img src="screenshots/auth_screen.PNG" width="200" alt="Authentication Screen"/>
       </td>
       <td align="center">
-        <b>Additional Screenshot</b><br/>
+        <b>Signup Screenshot</b><br/>
         <img src="screenshots/IMG_7103.PNG" width="200" alt="Additional App Screenshot"/>
       </td>
       <td align="center">
