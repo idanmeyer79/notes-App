@@ -22,7 +22,7 @@ class ImageService {
       }
       return null;
     } catch (e) {
-      debugPrint('Error picking image from gallery: $e');
+      ('Error picking image from gallery: $e');
       return null;
     }
   }
@@ -52,7 +52,7 @@ class ImageService {
       final response = await _supabase.storage
           .from('images')
           .upload(fileName, imageFile);
-      debugPrint(response);
+      (response);
       if (response.isNotEmpty) {
         final String publicUrl = _supabase.storage
             .from('images')

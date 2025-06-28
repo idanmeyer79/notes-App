@@ -82,14 +82,12 @@ class NoteService {
       'longitude': longitude,
     };
 
-    // Handle imageUrl - explicitly set to null if provided as null
     if (imageUrl != null) {
       noteData['imageUrl'] = imageUrl;
     } else {
-      noteData['imageUrl'] = null; // Explicitly set to null to remove image
+      noteData['imageUrl'] = null;
     }
 
-    // Handle createdAt - update if provided
     if (createdAt != null) {
       noteData['createdAt'] = Timestamp.fromDate(createdAt);
     }

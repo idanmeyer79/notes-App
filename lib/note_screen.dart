@@ -17,7 +17,7 @@ class NoteScreen extends StatefulWidget {
 }
 
 class _NoteScreenState extends State<NoteScreen> {
-  bool _isReadingMode = true; // Start in reading mode
+  bool _isReadingMode = true;
 
   @override
   void initState() {
@@ -76,7 +76,6 @@ class _NoteScreenState extends State<NoteScreen> {
   List<Widget> _buildAppBarActions(NoteViewModel noteViewModel) {
     if (noteViewModel.isEditing) {
       if (_isReadingMode) {
-        // Reading mode - show edit button
         return [
           IconButton(
             onPressed: () => _switchToEditMode(),
@@ -85,7 +84,6 @@ class _NoteScreenState extends State<NoteScreen> {
           ),
         ];
       } else {
-        // Editing mode - show delete button
         return [
           IconButton(
             onPressed:
@@ -127,11 +125,9 @@ class _NoteScreenState extends State<NoteScreen> {
 
       context.read<HomeViewModel>().refreshNotes();
 
-      // Switch to reading mode after saving
       if (noteViewModel.isEditing) {
         _switchToReadingMode();
       } else {
-        // For new notes, go back to home
         Navigator.of(context).pop();
       }
     }

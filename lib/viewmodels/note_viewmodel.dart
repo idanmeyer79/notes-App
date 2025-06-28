@@ -42,9 +42,8 @@ class NoteViewModel extends BaseViewModel {
       _longitude = note.longitude;
       _selectedDate = note.createdAt;
       _uploadedImageUrl = note.imageUrl;
-      _selectedImage = null; // Clear any previously selected image
+      _selectedImage = null;
     } else {
-      // For new notes, clear everything
       _title = '';
       _content = '';
       _latitude = null;
@@ -171,25 +170,20 @@ class NoteViewModel extends BaseViewModel {
   Future<bool> _updateNote() async {
     if (_note == null) return false;
 
-    // If we had an image before but now we don't, delete it from Supabase
     if (_note!.imageUrl != null &&
         _note!.imageUrl!.isNotEmpty &&
         _uploadedImageUrl == null) {
-      print('Deleting old image from Supabase: ${_note!.imageUrl}');
+      ('Deleting old image from Supabase: ${_note!.imageUrl}');
       await _imageService.deleteImageFromSupabase(_note!.imageUrl!);
     }
 
-    // Determine the final imageUrl value
-    // At this point, if there was a selected image, it has been uploaded and _uploadedImageUrl is set
-    String? finalImageUrl =
-        _uploadedImageUrl; // This will be null if no image or image was removed
-    print('Final imageUrl: $finalImageUrl');
+    String? finalImageUrl = _uploadedImageUrl;
+    ('Final imageUrl: $finalImageUrl');
 
-    // Check if the date has changed
     DateTime? updatedCreatedAt;
     if (_selectedDate != _note!.createdAt) {
       updatedCreatedAt = _selectedDate;
-      print('Date changed from ${_note!.createdAt} to $updatedCreatedAt');
+      ('Date changed from ${_note!.createdAt} to $updatedCreatedAt');
     }
 
     await _noteRepository.updateNote(
@@ -213,7 +207,6 @@ class NoteViewModel extends BaseViewModel {
       createdAt: updatedCreatedAt ?? _note!.createdAt,
     );
 
-    // Clear the selected image after successful update
     _selectedImage = null;
     notifyListeners();
 
@@ -224,7 +217,6 @@ class NoteViewModel extends BaseViewModel {
     if (_note == null) return false;
 
     return await executeAsync(() async {
-      // Delete the image from Supabase if it exists
       if (_note!.imageUrl != null && _note!.imageUrl!.isNotEmpty) {
         await _imageService.deleteImageFromSupabase(_note!.imageUrl!);
       }
