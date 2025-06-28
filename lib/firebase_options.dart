@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
@@ -31,42 +32,40 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCzpjGoysNGsh3gANlR00WxKyuyteZJBBw',
-    appId: '1:937580516814:ios:fd4a770298a6bd37cac79f',
-    messagingSenderId: '937580516814',
-    projectId: 'notes-app-f79cc',
-    authDomain: 'notes-app-f79cc.firebaseapp.com',
-    storageBucket: 'notes-app-f79cc.firebasestorage.app',
+  static FirebaseOptions get web => FirebaseOptions(
+    apiKey: dotenv.env['FIREBASE_WEB_API_KEY']!,
+    appId: dotenv.env['FIREBASE_WEB_APP_ID']!,
+    messagingSenderId: dotenv.env['FIREBASE_WEB_MESSAGING_SENDER_ID']!,
+    projectId: dotenv.env['FIREBASE_WEB_PROJECT_ID']!,
+    authDomain: dotenv.env['FIREBASE_WEB_AUTH_DOMAIN']!,
+    storageBucket: dotenv.env['FIREBASE_WEB_STORAGE_BUCKET']!,
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDwp8D1yZAM34YuS_iJCL2YwYecGfMwyHE',
-    appId: '1:937580516814:android:f5d40c0d32761024cac79f',
-    messagingSenderId: '937580516814',
-    projectId: 'notes-app-f79cc',
-    storageBucket: 'notes-app-f79cc.firebasestorage.app',
+  static FirebaseOptions get android => FirebaseOptions(
+    apiKey: dotenv.env['FIREBASE_ANDROID_API_KEY']!,
+    appId: dotenv.env['FIREBASE_ANDROID_APP_ID']!,
+    messagingSenderId: dotenv.env['FIREBASE_ANDROID_MESSAGING_SENDER_ID']!,
+    projectId: dotenv.env['FIREBASE_ANDROID_PROJECT_ID']!,
+    storageBucket: dotenv.env['FIREBASE_ANDROID_STORAGE_BUCKET']!,
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCzpjGoysNGsh3gANlR00WxKyuyteZJBBw',
-    appId: '1:937580516814:ios:fd4a770298a6bd37cac79f',
-    messagingSenderId: '937580516814',
-    projectId: 'notes-app-f79cc',
-    storageBucket: 'notes-app-f79cc.firebasestorage.app',
-    iosClientId:
-        '937580516814-dcb3i77v6u2guurnq57rl79m3tc0m59l.apps.googleusercontent.com',
-    iosBundleId: 'com.example.notesApp',
+  static FirebaseOptions get ios => FirebaseOptions(
+    apiKey: dotenv.env['FIREBASE_IOS_API_KEY']!,
+    appId: dotenv.env['FIREBASE_IOS_APP_ID']!,
+    messagingSenderId: dotenv.env['FIREBASE_IOS_MESSAGING_SENDER_ID']!,
+    projectId: dotenv.env['FIREBASE_IOS_PROJECT_ID']!,
+    storageBucket: dotenv.env['FIREBASE_IOS_STORAGE_BUCKET']!,
+    iosClientId: dotenv.env['FIREBASE_IOS_CLIENT_ID']!,
+    iosBundleId: dotenv.env['FIREBASE_IOS_BUNDLE_ID']!,
   );
 
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCzpjGoysNGsh3gANlR00WxKyuyteZJBBw',
-    appId: '1:937580516814:ios:fd4a770298a6bd37cac79f',
-    messagingSenderId: '937580516814',
-    projectId: 'notes-app-f79cc',
-    storageBucket: 'notes-app-f79cc.firebasestorage.app',
-    iosClientId:
-        '937580516814-dcb3i77v6u2guurnq57rl79m3tc0m59l.apps.googleusercontent.com',
-    iosBundleId: 'com.example.notesApp',
+  static FirebaseOptions get macos => FirebaseOptions(
+    apiKey: dotenv.env['FIREBASE_MACOS_API_KEY']!,
+    appId: dotenv.env['FIREBASE_MACOS_APP_ID']!,
+    messagingSenderId: dotenv.env['FIREBASE_MACOS_MESSAGING_SENDER_ID']!,
+    projectId: dotenv.env['FIREBASE_MACOS_PROJECT_ID']!,
+    storageBucket: dotenv.env['FIREBASE_MACOS_STORAGE_BUCKET']!,
+    iosClientId: dotenv.env['FIREBASE_MACOS_CLIENT_ID']!,
+    iosBundleId: dotenv.env['FIREBASE_MACOS_BUNDLE_ID']!,
   );
 }
