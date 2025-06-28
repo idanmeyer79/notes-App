@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:notes_app/widgets/notes/note_card.dart';
 import '../models/note.dart';
-import '../note_screen.dart';
 import '../widgets/empty_state_widget.dart';
 
 class NoteListView extends StatelessWidget {

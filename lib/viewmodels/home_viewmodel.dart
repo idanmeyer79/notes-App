@@ -1,11 +1,11 @@
 import '../models/note.dart';
-import '../repositories/note_repository.dart';
+import '../services/note_service.dart';
 import 'base_viewmodel.dart';
 
 enum ViewMode { list, map }
 
 class HomeViewModel extends BaseViewModel {
-  final NoteRepository _noteRepository = NoteRepository();
+  final NoteService _noteService = NoteService();
 
   List<Note> _notes = [];
   ViewMode _currentViewMode = ViewMode.list;
@@ -29,7 +29,7 @@ class HomeViewModel extends BaseViewModel {
     if (_currentUserId == null) return;
 
     await executeAsync(() async {
-      _notes = await _noteRepository.getAllNotes(_currentUserId!);
+      _notes = await _noteService.getNotes(_currentUserId!);
     });
   }
 

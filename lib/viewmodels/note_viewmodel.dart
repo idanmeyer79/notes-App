@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../models/note.dart';
-import '../repositories/note_repository.dart';
+import '../services/note_service.dart';
 import '../services/location_service.dart';
 import '../services/image_service.dart';
 import '../services/date_time_service.dart';
 import 'base_viewmodel.dart';
 
 class NoteViewModel extends BaseViewModel {
-  final NoteRepository _noteRepository = NoteRepository();
+  final NoteService _noteService = NoteService();
   final LocationService _locationService = LocationService();
   final ImageService _imageService = ImageService();
   final DateTimeService _dateTimeService = DateTimeService();
@@ -154,7 +154,7 @@ class NoteViewModel extends BaseViewModel {
   Future<bool> _createNote() async {
     await captureLocation();
 
-    _note = await _noteRepository.createNote(
+    _note = await _noteService.createNote(
       title: _title.trim(),
       content: _content.trim(),
       userId: _userId,
@@ -189,7 +189,7 @@ class NoteViewModel extends BaseViewModel {
       ('Date changed from ${_note!.createdAt} to $updatedCreatedAt');
     }
 
-    await _noteRepository.updateNote(
+    await _noteService.updateNote(
       noteId: _note!.id,
       title: _title.trim(),
       content: _content.trim(),
@@ -224,7 +224,7 @@ class NoteViewModel extends BaseViewModel {
         await _imageService.deleteImageFromSupabase(_note!.imageUrl!);
       }
 
-      await _noteRepository.deleteNote(_note!.id, _userId);
+      await _noteService.deleteNote(_note!.id, _userId);
       return true;
     });
   }
