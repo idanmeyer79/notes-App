@@ -30,7 +30,6 @@ class _AuthPageState extends State<AuthPage> {
   void _toggleMode() {
     setState(() {
       _isSignUp = !_isSignUp;
-
       _formKey.currentState?.reset();
       _emailController.clear();
       _passwordController.clear();
@@ -239,33 +238,18 @@ class _AuthPageState extends State<AuthPage> {
                                 ? null
                                 : () async {
                                   if (_formKey.currentState!.validate()) {
-                                    bool success;
                                     if (_isSignUp) {
-                                      success = await authViewModel
+                                      await authViewModel
                                           .signUpWithEmailAndPassword(
                                             _emailController.text.trim(),
                                             _passwordController.text,
                                           );
                                     } else {
-                                      success = await authViewModel
+                                      await authViewModel
                                           .signInWithEmailAndPassword(
                                             _emailController.text.trim(),
                                             _passwordController.text,
                                           );
-                                    }
-                                    if (success && mounted) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            _isSignUp
-                                                ? 'Account created successfully!'
-                                                : 'Successfully signed in!',
-                                          ),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                      );
                                     }
                                   }
                                 },

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../models/note.dart';
 import '../note_screen.dart';
+import '../widgets/empty_state_widget.dart';
 
 class NoteMapView extends StatefulWidget {
   final List<Note> notes;
@@ -38,9 +39,6 @@ class _NoteMapViewState extends State<NoteMapView> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.notes != widget.notes) {
       _createMarkers();
-      if (_isMapReady) {
-        _fitBounds();
-      }
     }
   }
 
@@ -89,7 +87,11 @@ class _NoteMapViewState extends State<NoteMapView> {
             .toList();
 
     if (notesWithLocation.isEmpty) {
-      return _buildEmptyState();
+      return EmptyStateWidget(
+        icon: Icons.map,
+        title: 'No notes with location',
+        description: 'Create notes with location data\nto see them on the map',
+      );
     }
 
     return Stack(
@@ -100,11 +102,6 @@ class _NoteMapViewState extends State<NoteMapView> {
             setState(() {
               _isMapReady = true;
             });
-            Future.delayed(const Duration(milliseconds: 500), () {
-              if (mounted) {
-                _fitBounds();
-              }
-            });
           },
           initialCameraPosition: _getInitialCameraPosition(),
           markers: _markers,
@@ -114,44 +111,7 @@ class _NoteMapViewState extends State<NoteMapView> {
           mapToolbarEnabled: false,
           compassEnabled: true,
         ),
-        if (_isMapReady)
-          Positioned(
-            top: 16,
-            right: 16,
-            child: FloatingActionButton(
-              onPressed: _fitBounds,
-              mini: true,
-              heroTag: 'map_fab',
-              child: const Icon(Icons.my_location),
-            ),
-          ),
       ],
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.map, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
-          Text(
-            'No notes with location',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Create notes with location data\nto see them on the map',
-            style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
     );
   }
 
@@ -173,55 +133,6 @@ class _NoteMapViewState extends State<NoteMapView> {
     return CameraPosition(
       target: LatLng(firstNote.latitude!, firstNote.longitude!),
       zoom: 10,
-    );
-  }
-
-  void _fitBounds() {
-    if (_mapController == null || _markers.isEmpty || !_isMapReady) return;
-
-    try {
-      final notesWithLocation =
-          widget.notes
-              .where((note) => note.latitude != null && note.longitude != null)
-              .toList();
-
-      if (notesWithLocation.length == 1) {
-        _mapController!.animateCamera(
-          CameraUpdate.newLatLngZoom(
-            LatLng(
-              notesWithLocation.first.latitude!,
-              notesWithLocation.first.longitude!,
-            ),
-            10,
-          ),
-        );
-      } else if (notesWithLocation.length > 1) {
-        final bounds = _calculateBounds(notesWithLocation);
-        _mapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
-      }
-    } catch (e) {
-      debugPrint('Error fitting bounds: $e');
-    }
-  }
-
-  LatLngBounds _calculateBounds(List<Note> notes) {
-    double minLat = double.infinity;
-    double maxLat = -double.infinity;
-    double minLng = double.infinity;
-    double maxLng = -double.infinity;
-
-    for (final note in notes) {
-      if (note.latitude != null && note.longitude != null) {
-        minLat = min(minLat, note.latitude!);
-        maxLat = max(maxLat, note.latitude!);
-        minLng = min(minLng, note.longitude!);
-        maxLng = max(maxLng, note.longitude!);
-      }
-    }
-
-    return LatLngBounds(
-      southwest: LatLng(minLat, minLng),
-      northeast: LatLng(maxLat, maxLng),
     );
   }
 }

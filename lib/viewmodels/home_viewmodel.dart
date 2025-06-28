@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import '../models/note.dart';
 import '../repositories/note_repository.dart';
 import 'base_viewmodel.dart';

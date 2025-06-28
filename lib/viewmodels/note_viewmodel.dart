@@ -75,26 +75,21 @@ class NoteViewModel extends BaseViewModel {
   void setSelectedImage(File? image) {
     _selectedImage = image;
     if (image == null) {
-      // If clearing selected image, also clear uploaded URL for new notes
       if (!isEditing) {
         _uploadedImageUrl = null;
       }
     } else {
-      // Reset uploaded URL when new image is selected
       _uploadedImageUrl = null;
     }
     notifyListeners();
   }
 
-  /// Clear both selected image and uploaded image URL
   void clearImage() {
     _selectedImage = null;
-    _uploadedImageUrl =
-        null; // This will be saved as null when updating existing notes
+    _uploadedImageUrl = null;
     notifyListeners();
   }
 
-  /// Upload the selected image to Supabase storage
   Future<bool> uploadSelectedImage() async {
     if (_selectedImage == null) return true;
 
@@ -139,7 +134,6 @@ class NoteViewModel extends BaseViewModel {
     }
 
     return await executeAsync(() async {
-      // Upload image first if there's a selected image
       if (_selectedImage != null) {
         final uploadSuccess = await uploadSelectedImage();
         if (!uploadSuccess) {
@@ -168,7 +162,6 @@ class NoteViewModel extends BaseViewModel {
       imageUrl: _uploadedImageUrl,
     );
 
-    // Clear the selected image after successful creation
     _selectedImage = null;
     notifyListeners();
 

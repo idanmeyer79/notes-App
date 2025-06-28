@@ -14,7 +14,7 @@ class SplashScreen extends StatelessWidget {
             const Icon(Icons.note_alt_outlined, size: 100, color: Colors.white),
             const SizedBox(height: 24),
             const Text(
-              'Notes App',
+              'Journal',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,

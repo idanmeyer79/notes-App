@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -7,9 +9,20 @@ import 'viewmodels/note_viewmodel.dart';
 import 'viewmodels/auth_viewmodel.dart';
 import 'widgets/auth_wrapper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/rendering.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Optimize frame rendering to reduce frame-related warnings
+  if (Platform.isAndroid) {
+    // Set preferred frame rate for Android
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Supabase.initialize(
     url: 'https://vexnbxzexdovldgcohaf.supabase.co',

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'viewmodels/home_viewmodel.dart';
 import 'viewmodels/auth_viewmodel.dart';
 import 'widgets/note_list_view.dart';
-import 'widgets/note_map_view.dart';
+import 'pages/note_map_view.dart';
 import 'note_screen.dart';
 
 class MyHomePage extends StatefulWidget {

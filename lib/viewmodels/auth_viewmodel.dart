@@ -40,11 +40,4 @@ class AuthViewModel extends BaseViewModel {
       await _authService.signOut();
     });
   }
-
-  Future<bool> resetPassword(String email) async {
-    return await executeAsync(() async {
-      await _authService.resetPassword(email);
-      return true;
-    });
-  }
 }
