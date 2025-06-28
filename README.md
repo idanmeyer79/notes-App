@@ -39,7 +39,7 @@ A modern Flutter application for creating and managing notes with location suppo
         <b>Authentication Screen</b><br/>
         <img src="screenshots/auth_screen.PNG" width="200" alt="Authentication Screen"/>
       </td>
-            <td align="center">
+      <td align="center">
         <b>Additional Screenshot</b><br/>
         <img src="screenshots/IMG_7103.PNG" width="200" alt="Additional App Screenshot"/>
       </td>
@@ -47,7 +47,6 @@ A modern Flutter application for creating and managing notes with location suppo
         <b>Home Screen - List View</b><br/>
         <img src="screenshots/home_list_view.PNG" width="200" alt="Home Screen List View"/>
       </td>
-
     </tr>
     <tr>
       <td align="center">
