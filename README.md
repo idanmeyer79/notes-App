@@ -30,6 +30,33 @@ A modern Flutter application for creating and managing notes with location suppo
 
 - **Material Design 3**: Latest Material Design guidelines
 
+## 📸 Screenshots
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <b>Authentication Screen</b><br/>
+        <img src="screenshots/auth_screen.png" width="200" alt="Authentication Screen"/>
+      </td>
+      <td align="center">
+        <b>Home Screen - List View</b><br/>
+        <img src="screenshots/home_list_view.png" width="200" alt="Home Screen List View"/>
+      </td>
+      <td align="center">
+        <b>Home Screen - Map View</b><br/>
+        <img src="screenshots/home_map_view.png" width="200" alt="Home Screen Map View"/>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <b>Note Reading</b><br/>
+        <img src="screenshots/note_reading.png" width="200" alt="Note Reading Screen"/>
+      </td>
+    </tr>
+  </table>
+</div>
+
 ## 🏗️ Architecture
 
 This app follows the **MVVM (Model-View-ViewModel)** design pattern for clean separation of concerns:
