@@ -8,7 +8,6 @@ A modern Flutter application for creating and managing notes with location suppo
 
 - **Google Sign-In**: Seamless authentication with Google accounts
 - **Firebase Auth**: Secure user authentication and session management
-- **Protected Routes**: Automatic redirection based on authentication status
 
 ### 📝 Note Management
 
