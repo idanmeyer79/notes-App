@@ -14,7 +14,7 @@ A modern Flutter application for creating and managing notes with location suppo
 
 - **Create & Edit**: Rich text editing with real-time updates
 - **Location Tags**: Automatically capture and store location data
-- **Image Support**: Attach images to notes (with S3 integration planned)
+- **Image Support**: Attach images to notes
 - **Timestamps**: Automatic creation and modification tracking
 
 ### 🗺️ Dual View Modes
