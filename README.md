@@ -11,7 +11,7 @@ A modern Flutter application for creating and managing notes with location suppo
 
 ### 📝 Note Management
 
-- **Create & Edit**: Rich text editing with real-time updates
+- **Create & Edit**: text editing with real-time updates
 - **Location Tags**: Automatically capture and store location data
 - **Image Support**: Attach images to notes
 - **Timestamps**: Automatic creation and modification tracking
@@ -43,7 +43,7 @@ This app follows the **MVVM (Model-View-ViewModel)** design pattern for clean se
 
 ### Key Components
 
-- **Models**: Data class representing note entitiy (`Note`)
+- **Models**: Data class representing note entity (`Note`)
 - **Views**: UI components and screens (`AuthPage`, `HomePage`, `NoteScreen`)
 - **ViewModels**: Business logic and state management (`AuthViewModel`, `HomeViewModel`, `NoteViewModel`)
 - **Services**: External integrations (`AuthService`, `LocationService`, `NoteService`)
