@@ -23,7 +23,7 @@ class AuthWrapper extends StatelessWidget {
             homeViewModel.setCurrentUserId(authViewModel.currentUser!.uid);
           });
 
-          return const MyHomePage(title: 'Notes App');
+          return const MyHomePage(title: 'Notes');
         } else {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final homeViewModel = context.read<HomeViewModel>();
